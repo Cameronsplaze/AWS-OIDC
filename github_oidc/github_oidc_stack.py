@@ -43,7 +43,7 @@ class GithubOidcStack(Stack):
                 federated=github_provider.open_id_connect_provider_arn,
                 assume_role_action="sts:AssumeRoleWithWebIdentity",
                 conditions={
-                    "StringLike": {
+                    "ForAnyValue:StringLike": {
                         # Controls who can be a subscriber (sub) to the role:
                         "token.actions.githubusercontent.com:sub": self._load_whitelist_config(OIDC_CONFIG_PATH),
                     },

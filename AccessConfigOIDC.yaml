@@ -17,5 +17,5 @@ Cameronsplaze:
   # Repositories I have hooked up to AWS:
   AWS-ContainerManager:
     # The branches in those repos that should be able to deploy:
-    - refs/head/main
+    - refs/heads/main
     # - refs/tags/v*
