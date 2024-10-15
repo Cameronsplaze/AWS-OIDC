@@ -38,6 +38,7 @@ class GithubOidcStack(Stack):
             # This stack can only be deployed one per account anyways,
             # so just make the role easy to use with actions:
             role_name=GITHUB_ACTIONS_ROLE_NAME,
+            max_session_duration=Duration.hours(MAX_SESSION_DURATION_HOURS),
             # https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_iam.FederatedPrincipal.html
             assumed_by=iam.FederatedPrincipal(
                 federated=github_provider.open_id_connect_provider_arn,
@@ -52,7 +53,6 @@ class GithubOidcStack(Stack):
                     },
                 },
             ),
-            max_session_duration=Duration.hours(MAX_SESSION_DURATION_HOURS),
         )
 
         ### Permissions for the Actions Runner
@@ -82,6 +82,7 @@ class GithubOidcStack(Stack):
         github_actions_role.add_to_policy(assume_cdk_roles_policy)
 
         ### OUTPUTS:
+        # https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.CfnOutput.html
         CfnOutput(
             self,
             "GithubActionsRoleName",
@@ -101,5 +102,8 @@ class GithubOidcStack(Stack):
         for org_name, repo_info in whitelist_info.items():
             for repo_name, branches_list in repo_info.items():
                 for branch in branches_list:
+                    # If I need to expand this one day, there's more than just `:ref:` to use.
+                    # There's also at least`:pull_request:` and `:Environment:`. Merging on ONLY
+                    # push makes sure only reviewed code runs on my account though.
                     whitelisted_repos.append(f"repo:{org_name}/{repo_name}:ref:{branch}")
         return whitelisted_repos
