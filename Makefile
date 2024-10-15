@@ -40,5 +40,5 @@ cdk-destroy:
 aws-whoami:
 	# Make sure you're in the right account
 	aws sts get-caller-identity \
-		--query Arn \
+		--query "$${query:-Arn}" \
 		--output text
