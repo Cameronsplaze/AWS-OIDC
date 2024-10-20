@@ -58,7 +58,7 @@ class GithubOidcStack(Stack):
         ### Permissions for the Actions Runner
         ## Just use the provided cdk v2 roles, as they are already set up for this:
         # Use the CDK Deployment roles:
-        # Bootstrap info: https://docs.aws.amazon.com/cdk/lateMAX_SESSION_DURATION_MINUTESst/guide/bootstrapping.html
+        # Bootstrap info: https://docs.aws.amazon.com/cdk/latest/guide/bootstrapping.html
         # Guide on this:  https://medium.com/@mylesloffler/using-github-actions-to-deploy-a-cdk-application-f28b7f792f12
         # Another Guide:  https://stackoverflow.com/a/61102280/11650472
         # docs on object: https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_iam.PolicyStatement.html
