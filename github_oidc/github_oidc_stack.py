@@ -97,13 +97,11 @@ class GithubOidcStack(Stack):
 
         whitelisted_repos = []
         ## Loop through the config file, and snag all the repos that can use OIDC:
-        # (See the config itself for info structure, and on adding more)
-        # TLDR: {OrgName: {RepoName: [Branches]}}
-        for org_name, repo_info in whitelist_info.items():
-            for repo_name, branches_list in repo_info.items():
-                for branch in branches_list:
-                    # If I need to expand this one day, there's more than just `:ref:` to use.
-                    # There's also at least`:pull_request:` and `:Environment:`. Merging on ONLY
-                    # push makes sure only reviewed code runs on my account though.
-                    whitelisted_repos.append(f"repo:{org_name}/{repo_name}:ref:{branch}")
+        #  File format: {org_name_1: [repo_name_a]}
+        for org_name, repo_list in whitelist_info.items():
+            for repo_name in repo_list:
+                # Technically there's `:ref:`, `:pull_request:`, etc, BUT I couldn't
+                # find one for workflow_dispatch. Plus you'd probably want the other
+                # options anyways, so just use the wildcard:
+                whitelisted_repos.append(f"repo:{org_name}/{repo_name}:*")
         return whitelisted_repos

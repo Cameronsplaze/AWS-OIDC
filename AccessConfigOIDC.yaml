@@ -3,19 +3,14 @@
 ### The config for what orgs/repos/branches to allow access to
 ### push to my AWS Account. Blocks should be in the form of:
 
-# Organization: # Dict - Org name
-#   Repository: # Dict - Repo name
-#     - Branch  # List - Branches to allow access to
+# Organization:  # Dict - Org name
+#   - Repository # List - Repo's to allow access to
 
-### Any level supports wildcards (*), BUT if you use it in one
-### of the dict keys, it has to be quoted.
+### Can technically use wild cards (*), but it opens up security risks
 
 
 
 # "Organization" is my personal account:
 Cameronsplaze:
-  # Repositories I have hooked up to AWS:
-  AWS-ContainerManager:
-    # The branches in those repos that should be able to deploy:
-    - refs/heads/main
-    # - refs/tags/v*
+  # Repositories that can deploy to AWS:
+  - AWS-ContainerManager
