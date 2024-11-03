@@ -12,6 +12,7 @@ app = cdk.App()
 GithubOidcStack(
     app,
     "GithubOidcStack",
+    description="To let GitHub Actions 'cdk deploy' to AWS",
     env=cdk.Environment(
         account=os.getenv('CDK_DEFAULT_ACCOUNT'),
         region=os.getenv('CDK_DEFAULT_REGION'),
