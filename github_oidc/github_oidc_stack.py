@@ -55,31 +55,41 @@ class GithubOidcStack(Stack):
             ),
         )
 
-        ### Permissions for the Actions Runner
-        ## Just use the provided cdk v2 roles, as they are already set up for this:
-        # Use the CDK Deployment roles:
-        # Bootstrap info: https://docs.aws.amazon.com/cdk/latest/guide/bootstrapping.html
-        # Guide on this:  https://medium.com/@mylesloffler/using-github-actions-to-deploy-a-cdk-application-f28b7f792f12
-        # Another Guide:  https://stackoverflow.com/a/61102280/11650472
-        # docs on object: https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_iam.PolicyStatement.html
-        assume_cdk_roles_policy = iam.PolicyStatement(
-            effect=iam.Effect.ALLOW,
-            actions=["sts:AssumeRole"],
-            resources=[f"arn:aws:iam::{self.account}:role/cdk-*"],
-            conditions={
-                "StringEquals": {
-                    "aws:ResourceTag/aws-cdk:bootstrap-role": [
-                        # https://docs.aws.amazon.com/cdk/v2/guide/bootstrapping-env.html#bootstrapping-env-roles
-                        "file-publishing",
-                        "lookup",
-                        "deploy",
-                    ],
+        ### Permissions for the Actions Runner:
+        github_actions_policies = [
+            ## Use the CDK Deployment roles, as they are already set up for this:
+            # Bootstrap info: https://docs.aws.amazon.com/cdk/latest/guide/bootstrapping.html
+            # Guide on this:  https://medium.com/@mylesloffler/using-github-actions-to-deploy-a-cdk-application-f28b7f792f12
+            # Another Guide:  https://stackoverflow.com/a/61102280/11650472
+            # docs on object: https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_iam.PolicyStatement.html
+            iam.PolicyStatement(
+                effect=iam.Effect.ALLOW,
+                actions=["sts:AssumeRole"],
+                resources=[f"arn:aws:iam::{self.account}:role/cdk-*"],
+                conditions={
+                    "StringEquals": {
+                        "aws:ResourceTag/aws-cdk:bootstrap-role": [
+                            # https://docs.aws.amazon.com/cdk/v2/guide/bootstrapping-env.html#bootstrapping-env-roles
+                            "file-publishing",
+                            "lookup",
+                            "deploy",
+                        ],
+                    },
                 },
-            },
-        )
+            ),
+            ## Allow the role to run boto3 EC2.Client.describe_instance_types:
+            # https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/ec2/client/describe_instance_types.html
+            iam.PolicyStatement(
+                effect=iam.Effect.ALLOW,
+                actions=["ec2:DescribeInstanceTypes"],
+                resources=["*"],
+            ),
+        ]
+
         ### Attach the policy to the role:
         # https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_iam.Role.html#addwbrtowbrpolicystatement
-        github_actions_role.add_to_policy(assume_cdk_roles_policy)
+        for policy in github_actions_policies:
+            github_actions_role.add_to_policy(policy)
 
         ### OUTPUTS:
         # https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.CfnOutput.html
