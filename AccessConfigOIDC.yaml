@@ -14,3 +14,19 @@
 Cameronsplaze:
   # Repositories that can deploy to AWS:
   - AWS-ContainerManager
+
+
+## FOR ANY REPO CREATED/RENAMED AFTER `July 15, 2026`: You'll want a second dictionary.
+## They improved OIDC security, by adding unique id's to the tokens.
+##  - https://github.blog/changelog/2026-04-23-immutable-subject-claims-for-github-actions-oidc-tokens/
+##  - https://builder.aws.com/content/3Gkby3FG8juxMqEXkwPzk5hsPz3/github-oidc-changes-that-can-break-aws-deployments
+## You can find your org-id and user-id at https://api.github.com/users/<name>.
+## DO NOT STAR THE ORG ID, it's a constant value anyways.
+
+## The second dict for new repos would look like:
+# Cameronsplaze@25357321:
+#   # Allow ANY repo in your org to deploy:
+#   - "*"
+#   # Allow a specific repo, with the repo's ID. Get the ID from
+#   # https://api.github.com/repos/<OrgName>/<RepoName>
+#   - "repo-name@repo-id"
